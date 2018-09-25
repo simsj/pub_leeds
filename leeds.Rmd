@@ -10,7 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-Self-published online: `r date()`  
+Self-published online: Mon Sep 24 13:43:43 2018  
+Updated: `r date()`  
 Text License:  CC 4.0 Attribution     
 
 ##Abstract  
@@ -21,7 +22,7 @@ One of the most challenging tasks genetic genealogists face is properly categori
 
 As the technique was initially described, the names of a test-taker's predicted 2C and 3C matches at AncestryDNA are transcribed (or copied and pasted) in rank order into a table with the names of matches forming the first, left-most column of a table. A spreadsheet provides an easily modifiable way to build a table, but the method could also be implemented with paper and colored pencils or markers. If there are any matches in this list that share 400 cM of DNA or more with the test-taker, they are removed from the table. The method then applies a few simple rules to build new columns in the table by applying the rules to the entire table from the top of the table to the bottom of the table in a row-wise fashion.  Each new column in the table produced by the method represents a group of shared matches.
 
-[^1]: [Dana Stewart Leeds, DNA with Dana Leeds, accessed September 19, 2018](https://dnawithdana.com/)  
+[^1]: [Dana Stewart Leeds, https://www.danaleeds.com, accessed September 25, 2018](https://www.danaleeds.com)  
 
 ##Data sources 
 AncestryDNA does not provide customers with a method to download their match list or their in-common-with matches (shared matches) list for use off-line.  On August 15, 2018, the commercially available DNAGedcom Client[^2] software package was used to download the author's match list and the in-common-with matches in two separate .csv format files from his account at AncestryDNA. These files provide a snapshot of the author's account on that particular day. 
@@ -119,7 +120,7 @@ get_leeds <- function(thedf,theicws){
   if(i==1){
     # need to add the first new column to grouped dataframe, initially empty
     grouped <- mutate(thedf,G1 = "")
-    #populate column cells with the value TRUE when a match shares a match
+    # populate column cells with the value TRUE when a match shares a match
     testing <- getmatch_icw(grouped$matchid[i],theicws)
     scoreTRUE <- which(apply(grouped,1, function(r) any(r %in% testing$icwid)))
     scoreTRUE <- c(i,scoreTRUE)
@@ -131,7 +132,7 @@ get_leeds <- function(thedf,theicws){
   # otherwise create a new column
   checkrow <- grouped[i,]
   if(sum(apply(checkrow,2,function(s) any(s == TRUE)))==0){
-    #this is a row that needs to have a new column started for it
+    # this is a row that needs to have a new column started for it
     varname <- paste("G",ncol(grouped) - 6,sep="")
     grouped[[varname]] <- ""
     testing <- getmatch_icw(grouped$matchid[i],theicws)
@@ -203,7 +204,7 @@ As implemented in this article, the R version of the Leeds Method inserts the wo
 
 There are several compelling aspects of the Leeds Method for summarizing autosomal DNA matches as originally implemented.  It does not require advanced knowledge of genetic genealogy to implement. It does not require advanced computer skills to implement, and it does not require any prior knowledge of the families in the match list or in the in-common-with matches.  These aspects of the method make it very appealing when *beginning* to assess how matches are related to a test-taker.  If there are only a couple of dozen or so matches that meet the Leeds Method criteria, the method is relatively straight forward to implement by hand on an *ad hoc* basis.    
 
-Given all of the above mentioned positive aspects of the Leeds Method, why re-implement the method in computer code? In a word, reproducibility.  Reproducibility is one of the fundamental requirements of sound genealogical research. Reproducibility means given a set of genealogical and genetic data, can another person reproduce the previous analysis.  
+Given all of the above mentioned positive aspects of the Leeds Method, why re-implement the method in computer code? In a word, reproducibility.  Reproducibility is one of the fundamental requirements of sound genealogical research. Reproducibility means given a set of genealogical and genetic data, another person can reproduce the previous analysis.  
 
 Genetic genealogists need to be aware that vendor databases containing the source data for their genetic analyzes are dynamic and not static.  Match lists change over time. Not only can new matches appear over time, customers are also free to remove their data from vendor databases. Genetic genealogists need a convenient snapshot of their genetic data sources that they use in an analysis.  Downloaded match lists and in-common-with match lists like those produced by the DNAGedcom Client software can be used for this purpose.  
 
